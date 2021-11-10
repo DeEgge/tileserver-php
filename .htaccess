@@ -6,7 +6,7 @@ DirectoryIndex tileserver.php
 RewriteEngine on
 
 # Option: some hostings require RewriteBase e.g. 1&1.com
-#RewriteBase /
+RewriteBase /
 #RewriteBase /directory/
 
 # Option: some hostings require -MultiViews e.g. 1&1.com
@@ -16,9 +16,11 @@ RewriteEngine on
 #Options -Indexes
 
 # Option: CORS header for cross-domain origin access to all data
-#<ifModule mod_headers.c>
-#  Header set Access-Control-Allow-Origin *
-#</ifModule>
+<ifModule mod_headers.c>
+  SetEnvIf Origin "http(s)?://(www\.)?(chringel.dev|tiles.chringel.dev)$" AccessControlAllowOrigin=$0
+  Header add Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+  Header merge Vary Origin
+</ifModule>
 
 # Block direct downloading of .mbtiles
 <FilesMatch "\.mbtiles$">
