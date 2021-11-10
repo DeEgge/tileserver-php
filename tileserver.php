@@ -340,7 +340,6 @@ class Server {
   public function renderTile($tileset, $z, $y, $x, $ext) {
     if ($this->isDBLayer($tileset)) {
       if ($this->isModified($tileset) == true) {
-        header('Access-Control-Allow-Origin: *');
         header('HTTP/1.1 304 Not Modified');
         die;
       }
@@ -374,7 +373,6 @@ class Server {
         } else {
           header('Content-type: image/' . $format);
         }
-        header('Access-Control-Allow-Origin: *');
         echo $data;
       }
     } elseif ($this->isFileLayer($tileset)) {
@@ -391,7 +389,6 @@ class Server {
           $mimetypes = ['gif', 'jpeg', 'png'];
           $mime .= $mimetypes[exif_imagetype($name) - 1];
         }
-        header('Access-Control-Allow-Origin: *');
         header('Content-Type: ' . $mime);
         header('Content-Length: ' . filesize($name));
         fpassthru($fp);
@@ -418,23 +415,19 @@ class Server {
   public function getCleanTile($scale = 1, $format = 'png') {
     switch ($format) {
       case 'pbf':
-        header('Access-Control-Allow-Origin: *');
         header('HTTP/1.1 204 No Content');
         header('Content-Type: application/json; charset=utf-8');
         break;
       case 'webp':
-        header('Access-Control-Allow-Origin: *');
         header('Content-type: image/webp');
         echo base64_decode('UklGRhIAAABXRUJQVlA4TAYAAAAvQWxvAGs=');
         break;
       case 'jpg':
-        header('Access-Control-Allow-Origin: *');
         header('Content-type: image/jpg');
         echo base64_decode('/9j/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/yQALCAABAAEBAREA/8wABgAQEAX/2gAIAQEAAD8A0s8g/9k=');
         break;
       case 'png':
       default:
-        header('Access-Control-Allow-Origin: *');
         header('Content-type: image/png');
         // 256x256 transparent optimised png tile
         echo pack('H*', '89504e470d0a1a0a0000000d494844520000010000000100010300000066bc3a2500000003504c5445000000a77a3dda0000000174524e530040e6d8660000001f494441541819edc1010d000000c220fba77e0e37600000000000000000e70221000001f5a2bd040000000049454e44ae426082');
@@ -480,7 +473,6 @@ class Server {
             $grid .= '"' . $r['key'] . '":' . $r['json'] . ',';
           }
           $grid = rtrim($grid, ',') . '}}';
-          header('Access-Control-Allow-Origin: *');
 
           if (isset($_GET['callback']) && !empty($_GET['callback'])) {
             header('Content-Type:text/javascript charset=utf-8');
@@ -490,7 +482,6 @@ class Server {
             echo $grid;
           }
         } else {
-          header('Access-Control-Allow-Origin: *');
           echo '{}';
           die;
         }
@@ -682,7 +673,6 @@ class Json extends Server {
    */
   public function getJson() {
     parent::setDatasets();
-    header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/json; charset=utf-8');
     if ($this->callback !== 'grid') {
       echo $this->callback . '(' . $this->createJson($this->layer) . ');'; die;
@@ -696,7 +686,6 @@ class Json extends Server {
    */
   public function getJsonp() {
     parent::setDatasets();
-    header('Access-Control-Allow-Origin: *');
     header('Content-Type: application/javascript; charset=utf-8');
     echo $this->callback . '(' . $this->createJson($this->layer) . ');';
   }
